@@ -130,6 +130,71 @@ public class BoardDAO {
         System.out.println("sql");
     }
     
+    //글 수정 화면 보여주기
+	public Board getViewForEdit (int board_no) throws Exception {
+		Connection conn = open();
+    	Board b = new Board();
+    	
+    	String sql = " select board_no, title, user_id, to_char(reg_date, 'yyyy.mm.dd') reg_date, views, content from board where board_no = ?";
+    	
+    	PreparedStatement pstmt = conn.prepareStatement(sql);
+    	pstmt.setInt(1, board_no);
+    	ResultSet rs = pstmt.executeQuery(); //쿼리문 실행 -> 데이터 베이스 결과 저장
+    	
+    	rs.next();
+    	
+    	try(conn; pstmt; rs) {
+    			b.setBoard_no(rs.getInt(1));
+    			b.setTitle(rs.getString(2));
+    			b.setUser_id(rs.getString(3));
+    			b.setReg_date(rs.getString(4));
+    			b.setViews(rs.getInt(5));
+    			b.setContent(rs.getString(6));
+    			
+    			pstmt.executeQuery();
+        		return b;
+    	}
+	}
+	
+	//게시판 글 수정
+	public void updateBoard (Board b) throws Exception {
+		Connection conn = open();
+    	
+    	String sql = "update board set title = ?, user_id = ?, content = ? where board_no = ?";
+    	PreparedStatement pstmt = conn.prepareStatement(sql); //쿼리문 등록 -> 컴파일
+    	
+    	try (conn; pstmt){
+    		pstmt.setString(1, b.getTitle());
+    		pstmt.setString(2, b.getUser_id());
+    		pstmt.setString(3, b.getContent());
+    		pstmt.setInt(4, b.getBoard_no());
+    		
+    		//수정된 글이 없을 경우
+    		if (pstmt.executeUpdate() !=1) {
+    			throw new Exception("DB에러");
+    		}
+    	}
+	}
+	
+	
+	//게시판 글 삭제
+	public void deleteBoard(int board_no) throws Exception {
+		Connection conn = open();
+		
+		String sql = "delete from board where board_no=?";
+		PreparedStatement pstmt = conn.prepareStatement(sql);
+		
+		try (conn; pstmt){
+			pstmt.setInt(1, board_no);
+			
+			//삭제된 글이 없을 경우
+			if(pstmt.executeUpdate() != 1) {
+				throw new Exception("DB에러");
+			}
+		}
+	}
+
+	
+	
+	
 }
-
-

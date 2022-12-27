@@ -35,19 +35,19 @@
           <div class="cont">
             <textarea name="content" placeholder="내용 입력"></textarea>
           </div>
+          </div>
         </form>
         </div>
         <div class="bt_wrap">
           <a href="#" onclick="chkForm(); return false;" class="on">등록</a>
           <a href="list">취소</a>
         </div>
-      </div>
-    </div>
       <script>
     	<c:if test="${error != null}">
     		alert("${error}");
     	</c:if>
     </script>
     <script type="text/javascript" src="./script.js"></script>
+	</div>
 </body>
 </html>
